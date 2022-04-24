@@ -10,7 +10,6 @@ export interface IUser extends Document {
   alamat: string;
   foto: string;
   role: string; //admin, agen, masyarakat
-  createdAt: Date;
 }
 
 const schema: Schema = new Schema<IUser>(
@@ -38,7 +37,7 @@ const schema: Schema = new Schema<IUser>(
     foto: String,
     role: {
       type: String,
-      default: "pelanggan",
+      default: "masyarakat",
       required: true,
     },
   },

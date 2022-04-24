@@ -37,41 +37,40 @@ class AuthController {
       res.status(200).send({
         error: false,
         message: "Anda berhasil login",
-        user: json,
+        data: json,
       });
     } catch (error) {
       console.log(error);
     }
   }
 
-  async logout(req: Request, res: Response) {
-    const { jwt } = req.cookies;
-
-    if (!jwt) {
-      return res.status(404).send({ error: true, message: "Anda belum login" });
-    }
-
-    res.clearCookie("jwt");
-
-    res.status(200).send({
-      error: false,
-      message: "Anda berhasil logout",
-    });
-  }
-
   async verifyToken(req: Request, res: Response) {
-    const { jwt } = req.cookies;
+    const token =
+      req.body.token || req.query.token || req.headers["x-access-token"];
 
-    if (!jwt) {
+    if (!token) {
       return res
         .status(404)
-        .send({ error: true, message: "Token tidak valid" });
+        .send({ error: true, message: "Token diperlukan untuk otentikasi" });
     }
 
-    res.status(200).send({
-      error: false,
-      message: "Token valid",
-    });
+    try {
+      const decoded = jsonwebtoken.verify(token, process.env.TOKEN_KEY!);
+
+      const user = await userModel.findById(
+        (decoded as jsonwebtoken.JwtPayload).id
+      );
+
+      res.status(200).send({
+        error: false,
+        message: "Token valid",
+        data: user,
+      });
+    } catch (err) {
+      return res
+        .status(401)
+        .send({ error: true, message: "Token Tidak Valid" });
+    }
   }
 }
 
