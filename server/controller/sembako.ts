@@ -11,7 +11,7 @@ class SembakoController {
       if (!sembako) {
         return res
           .status(404)
-          .send({ error: true, message: "Sembako tidak ditemukan" });
+          .send({ error: true, message: "Data sembako tidak ditemukan" });
       }
       res.status(200).send({ error: false, data: sembako });
     } catch (error) {
@@ -20,10 +20,10 @@ class SembakoController {
   }
 
   async getAllSembakoAgen(req: Request, res: Response) {
-    const idAgen = req.params.idAgen;
+    const agen = req.params.idAgen;
 
     const sembakos = await sembakoModel.find({
-      agen: idAgen,
+      agen,
     });
 
     res.send({
@@ -34,7 +34,9 @@ class SembakoController {
 
   async post(req: Request, res: Response) {
     try {
-      const { agen, nama, foto, harga, stok } = req.body;
+      const agen = req.params.idAgen;
+
+      const { nama, foto, harga, stok } = req.body;
 
       const sembako = await sembakoModel.create({
         agen,
@@ -64,31 +66,31 @@ class SembakoController {
 
   async put(req: Request, res: Response) {
     try {
-      const user = await sembakoModel.findById(req.params.id);
-      if (!user) {
+      const sembako = await sembakoModel.findById(req.params.id);
+      if (!sembako) {
         return res
           .status(404)
-          .send({ error: true, message: "User tidak ditemukan" });
+          .send({ error: true, message: "Data sembako tidak ditemukan" });
       }
-      const { ktm, username, password, foto } = req.body;
+      const { nama, foto, harga, stok } = req.body;
 
       const update = JSON.parse(
         JSON.stringify({
-          ktm,
-          username,
-          password,
+          nama,
           foto,
+          harga,
+          stok,
         })
       );
 
-      user.set(update);
+      sembako.set(update);
 
-      await user.save();
+      await sembako.save();
 
       res.status(200).send({
         error: false,
-        message: "User berhasil diupdate",
-        data: user,
+        message: "Data sembako berhasil diupdate",
+        data: sembako,
       });
     } catch (error) {
       console.log(error);
