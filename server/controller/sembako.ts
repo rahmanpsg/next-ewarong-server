@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { Model } from "mongoose";
 import { ISembako } from "../models/sembako";
+import cloudinary from "cloudinary";
+import { UploadedFile } from "express-fileupload";
 
 const sembakoModel: Model<ISembako> = require("../models/sembako");
 
@@ -36,14 +38,25 @@ class SembakoController {
     try {
       const agen = req.params.idAgen;
 
-      const { nama, foto, harga, stok } = req.body;
+      const { nama, harga, stok } = req.body;
+
+      let fotoUrl;
+
+      if (req.files!.file) {
+        const file: UploadedFile = req.files?.file as UploadedFile;
+        const result = await cloudinary.v2.uploader.upload(file.tempFilePath, {
+          public_id: "sembako/" + file.name,
+        });
+
+        fotoUrl = result.url;
+      }
 
       const sembako = await sembakoModel.create({
         agen,
         nama,
-        foto,
         harga,
         stok,
+        fotoUrl,
       });
 
       sembako.save((err, doc) => {
@@ -72,14 +85,25 @@ class SembakoController {
           .status(404)
           .send({ error: true, message: "Data sembako tidak ditemukan" });
       }
-      const { nama, foto, harga, stok } = req.body;
+      const { nama, harga, stok } = req.body;
+
+      let fotoUrl;
+
+      if (req.files?.file) {
+        const file: UploadedFile = req.files?.file as UploadedFile;
+        const result = await cloudinary.v2.uploader.upload(file.tempFilePath, {
+          public_id: "sembako/" + file.name,
+        });
+
+        fotoUrl = result.url;
+      }
 
       const update = JSON.parse(
         JSON.stringify({
           nama,
-          foto,
           harga,
           stok,
+          fotoUrl,
         })
       );
 

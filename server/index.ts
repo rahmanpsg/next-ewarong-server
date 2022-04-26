@@ -10,6 +10,7 @@ const appNext = next({ dev });
 const handle: NextApiHandler = appNext.getRequestHandler();
 
 const database = require("./config/database");
+require("./config/cloudinary");
 
 appNext.prepare().then(() => {
   const app = require("./app");

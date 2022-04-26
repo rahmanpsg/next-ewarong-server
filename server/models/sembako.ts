@@ -3,7 +3,7 @@ import { Schema, Document, model, Types } from "mongoose";
 export interface ISembako extends Document {
   agen: Types.ObjectId;
   nama: string;
-  foto: string;
+  fotoUrl: string;
   harga: number;
   stok: number;
 }
@@ -16,7 +16,7 @@ const schema: Schema = new Schema<ISembako>(
       required: true,
     },
     nama: String,
-    foto: String,
+    fotoUrl: String,
     harga: Number,
     stok: Number,
   },
