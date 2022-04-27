@@ -22,6 +22,8 @@ const validate = (validations: ValidationChain[]) => {
       return next();
     }
 
+    console.log(errors.array());
+
     setTimeout(() => {
       res.status(400).json({ error: true, errors: errors.mapped() });
     }, 3000);

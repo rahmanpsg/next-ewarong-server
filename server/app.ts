@@ -5,6 +5,7 @@ import morgan from "morgan";
 import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
 import sembakoRoutes from "./routes/sembako";
+import pesananRoutes from "./routes/pesanan";
 
 const app = express();
 
@@ -21,5 +22,6 @@ app.use(morgan("dev"));
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/sembako", sembakoRoutes);
+app.use("/api/pesanan", pesananRoutes);
 
 module.exports = app;

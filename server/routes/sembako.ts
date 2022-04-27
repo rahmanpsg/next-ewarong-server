@@ -5,7 +5,8 @@ import validate from "../middleware/validator";
 
 const router = express.Router();
 
-router.get("/:idAgen", SembakoController.getAllSembakoAgen);
+router.get("/", SembakoController.getAll);
+router.get("/agen/:idAgen", SembakoController.getAllSembakoAgen);
 router.post(
   "/:idAgen",
   validate([

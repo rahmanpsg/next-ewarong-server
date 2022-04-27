@@ -21,6 +21,15 @@ class SembakoController {
     }
   }
 
+  async getAll(_: Request, res: Response) {
+    const sembakos = await sembakoModel.find();
+
+    res.send({
+      error: false,
+      data: sembakos,
+    });
+  }
+
   async getAllSembakoAgen(req: Request, res: Response) {
     const agen = req.params.idAgen;
 
