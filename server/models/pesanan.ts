@@ -4,6 +4,7 @@ export interface IPesanan extends Document {
   agen: Types.ObjectId;
   masyarakat: Types.ObjectId;
   sembako: Types.ObjectId;
+  harga: number;
   jumlah: number;
   status: boolean;
   selesai: boolean;
@@ -26,6 +27,7 @@ const schema: Schema = new Schema<IPesanan>(
       ref: "Sembako",
       required: true,
     },
+    harga: Number,
     jumlah: Number,
     status: Boolean,
     selesai: Boolean,

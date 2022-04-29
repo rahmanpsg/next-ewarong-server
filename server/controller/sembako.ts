@@ -57,7 +57,7 @@ class SembakoController {
           public_id: "sembako/" + file.name,
         });
 
-        fotoUrl = result.url;
+        fotoUrl = result.secure_url;
       }
 
       const sembako = await sembakoModel.create({

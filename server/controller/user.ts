@@ -19,9 +19,11 @@ class UserController {
     }
   }
 
-  async getAllAgen(_: Request, res: Response) {
+  async getAllByRole(req: Request, res: Response) {
+    const role = req.params.role;
+
     const users = await userModel.find({
-      role: "agen",
+      role,
     });
 
     res.send({
