@@ -1,6 +1,6 @@
 import express from "express";
 import PesananController from "../controller/pesanan";
-import { body, param } from "express-validator";
+import { body, check, param } from "express-validator";
 import validate from "../middleware/validator";
 
 const router = express.Router();
@@ -10,12 +10,15 @@ router.get(
   validate([param("id").notEmpty()]),
   PesananController.getAllPesananAgen
 );
+
 router.get(
   "/masyarakat/:id",
   validate([param("id").notEmpty()]),
-  PesananController.getAllPesananAgen
+  PesananController.getAllPesananMasyarakat
 );
+
 router.get("/:id", validate([param("id").isInt()]), PesananController.get);
+
 router.post(
   "/",
   validate([
@@ -25,6 +28,20 @@ router.post(
     body("jumlah").isInt(),
   ]),
   PesananController.post
+);
+
+router.put(
+  "/konfirmasi/:role/:id",
+  validate([
+    param("role").notEmpty(),
+    check("role").isIn(["agen", "masyarakat"]),
+    param("id").notEmpty(),
+    body("status").isBoolean(),
+    body("selesai")
+      .if(param("role").isIn(["masyarakat"]))
+      .isBoolean(),
+  ]),
+  PesananController.konfirmasi
 );
 
 export default router;

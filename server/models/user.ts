@@ -8,7 +8,7 @@ export interface IUser extends Document {
   nama: string;
   telpon: string;
   alamat: string;
-  foto: string;
+  fotoUrl: string;
   saldo: number;
   role: string; //admin, agen, masyarakat
 }
@@ -35,7 +35,7 @@ const schema: Schema = new Schema<IUser>(
       required: true,
     },
     alamat: String,
-    foto: String,
+    fotoUrl: String,
     saldo: Number,
     role: {
       type: String,

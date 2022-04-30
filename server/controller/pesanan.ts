@@ -30,8 +30,9 @@ class PesananController {
       .find({
         agen,
       })
-      .populate("masyarakat", "ktm nama")
-      .populate("sembako", "nama harga fotoUrl");
+      .populate("masyarakat", "fotoUrl ktm nama saldo")
+      .populate("sembako", "nama harga fotoUrl")
+      .sort({ updatedAt: -1 });
 
     res.send({
       error: false,
@@ -46,8 +47,9 @@ class PesananController {
       .find({
         masyarakat,
       })
-      .populate("masyarakat", "ktm nama")
-      .populate("sembako", "nama harga fotoUrl");
+      .populate("agen", "fotoUrl nama alamat")
+      .populate("sembako", "nama harga fotoUrl")
+      .sort({ updatedAt: -1 });
 
     res.send({
       error: false,
@@ -59,7 +61,7 @@ class PesananController {
     try {
       const { masyarakat, agen, sembako, jumlah } = req.body;
 
-      // validasi stok dan harga
+      // validasi stok
       const sembakoData = await sembakoModel.findById(sembako);
 
       if (sembakoData?.stok! < jumlah) {
@@ -87,10 +89,11 @@ class PesananController {
         jumlah,
       });
 
+      await pesanan.populate("agen", "fotoUrl nama alamat");
+      await pesanan.populate("sembako", "nama harga fotoUrl");
+
       pesanan.save((err, doc) => {
         if (err) return res.status(500).send({ error: true, message: err });
-
-        console.log(doc);
 
         res.status(200).send({
           error: false,
@@ -104,6 +107,77 @@ class PesananController {
         error: true,
         message: "Data gagal ditambahkan",
       });
+    }
+  }
+
+  async konfirmasi(req: Request, res: Response) {
+    try {
+      const pesanan = await pesananModel.findById(req.params.id);
+      if (!pesanan) {
+        return res
+          .status(404)
+          .send({ error: true, message: "Data pesanan tidak ditemukan" });
+      }
+
+      // validasi stok
+      const sembakoData = await sembakoModel.findById(pesanan.sembako);
+
+      if (sembakoData?.stok! < pesanan.jumlah) {
+        return res
+          .status(400)
+          .send({ error: true, message: "Stok tidak cukup" });
+      }
+
+      // validasi saldo
+      const masyarakatData = await userModel.findById(pesanan.masyarakat);
+
+      if (masyarakatData?.saldo! < sembakoData?.harga! * pesanan.jumlah) {
+        return res
+          .status(400)
+          .send({ error: true, message: "Saldo tidak cukup" });
+      }
+
+      const { status, selesai } = req.body;
+
+      const update = JSON.parse(
+        JSON.stringify({
+          status,
+          selesai,
+        })
+      );
+
+      pesanan.set(update);
+
+      await pesanan.save();
+
+      setTimeout(() => {
+        if (selesai) {
+          // update stok
+          sembakoData!.stok -= pesanan.jumlah;
+          sembakoData!.save();
+
+          // update saldo masyarakat
+          const saldo =
+            masyarakatData!.saldo - sembakoData?.harga! * pesanan.jumlah;
+          const updateMasyarakat = JSON.parse(
+            JSON.stringify({
+              saldo,
+            })
+          );
+
+          masyarakatData!.set(updateMasyarakat);
+
+          masyarakatData!.save();
+        }
+
+        res.status(200).send({
+          error: false,
+          message: "Data pesanan berhasil diupdate",
+          data: pesanan,
+        });
+      }, 2000);
+    } catch (error) {
+      console.log(error);
     }
   }
 }
