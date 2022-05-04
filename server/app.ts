@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
 import sembakoRoutes from "./routes/sembako";
 import pesananRoutes from "./routes/pesanan";
+import laporanRoutes from "./routes/laporan";
 
 const app = express();
 
@@ -23,5 +24,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/sembako", sembakoRoutes);
 app.use("/api/pesanan", pesananRoutes);
+app.use("/api/laporan", laporanRoutes);
 
 module.exports = app;

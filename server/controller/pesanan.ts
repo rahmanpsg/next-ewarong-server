@@ -119,63 +119,53 @@ class PesananController {
           .send({ error: true, message: "Data pesanan tidak ditemukan" });
       }
 
-      // validasi stok
-      const sembakoData = await sembakoModel.findById(pesanan.sembako);
-
-      if (sembakoData?.stok! < pesanan.jumlah) {
-        return res
-          .status(400)
-          .send({ error: true, message: "Stok tidak cukup" });
-      }
-
-      // validasi saldo
-      const masyarakatData = await userModel.findById(pesanan.masyarakat);
-
-      if (masyarakatData?.saldo! < sembakoData?.harga! * pesanan.jumlah) {
-        return res
-          .status(400)
-          .send({ error: true, message: "Saldo tidak cukup" });
-      }
-
       const { status, selesai } = req.body;
 
-      const update = JSON.parse(
-        JSON.stringify({
-          status,
-          selesai,
-        })
-      );
+      const sembakoData = await sembakoModel.findById(pesanan.sembako);
 
-      pesanan.set(update);
+      const masyarakatData = await userModel.findById(pesanan.masyarakat);
+
+      if (status == true) {
+        // validasi stok
+        if (sembakoData?.stok! < pesanan.jumlah) {
+          return res
+            .status(400)
+            .send({ error: true, message: "Stok tidak cukup" });
+        }
+
+        // validasi saldo
+        if (masyarakatData?.saldo! < pesanan.harga * pesanan.jumlah) {
+          return res
+            .status(400)
+            .send({ error: true, message: "Saldo tidak cukup" });
+        }
+      }
+
+      pesanan.set({ status, selesai });
 
       await pesanan.save();
 
-      setTimeout(() => {
-        if (selesai) {
-          // update stok
-          sembakoData!.stok -= pesanan.jumlah;
-          sembakoData!.save();
+      if (selesai) {
+        // update stok
+        sembakoData!.stok -= pesanan.jumlah;
+        sembakoData!.save();
 
-          // update saldo masyarakat
-          const saldo =
-            masyarakatData!.saldo - sembakoData?.harga! * pesanan.jumlah;
-          const updateMasyarakat = JSON.parse(
-            JSON.stringify({
-              saldo,
-            })
-          );
+        // update saldo masyarakat
+        const saldo =
+          masyarakatData!.saldo - sembakoData?.harga! * pesanan.jumlah;
 
-          masyarakatData!.set(updateMasyarakat);
-
-          masyarakatData!.save();
-        }
-
-        res.status(200).send({
-          error: false,
-          message: "Data pesanan berhasil diupdate",
-          data: pesanan,
+        masyarakatData!.set({
+          saldo,
         });
-      }, 2000);
+
+        masyarakatData!.save();
+      }
+
+      res.status(200).send({
+        error: false,
+        message: "Data pesanan berhasil diupdate",
+        data: pesanan,
+      });
     } catch (error) {
       console.log(error);
     }

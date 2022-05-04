@@ -6,6 +6,11 @@ import validate from "../middleware/validator";
 const router = express.Router();
 
 router.get("/", SembakoController.getAll);
+router.get(
+  "/search/:keyword",
+  validate([param("keyword").notEmpty()]),
+  SembakoController.getByKeyword
+);
 router.get("/agen/:idAgen", SembakoController.getAllSembakoAgen);
 router.post(
   "/:idAgen",

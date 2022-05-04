@@ -30,6 +30,19 @@ class SembakoController {
     });
   }
 
+  async getByKeyword(req: Request, res: Response) {
+    const keyword = req.params.keyword;
+
+    const sembakos = await sembakoModel.find({
+      nama: { $regex: keyword, $options: "i" },
+    });
+
+    res.send({
+      error: false,
+      data: sembakos,
+    });
+  }
+
   async getAllSembakoAgen(req: Request, res: Response) {
     const agen = req.params.idAgen;
 
