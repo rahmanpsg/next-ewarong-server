@@ -15,5 +15,17 @@ router.post(
   ]),
   AuthController.login
 );
+router.post(
+  "/registrasi",
+  validate([
+    body("nik").isInt(),
+    body("nama").notEmpty(),
+    body("alamat").notEmpty(),
+    body("telpon").isMobilePhone("id-ID").notEmpty(),
+    body("username").notEmpty(),
+    body("password").notEmpty(),
+  ]),
+  AuthController.registrasi
+);
 
 export default router;

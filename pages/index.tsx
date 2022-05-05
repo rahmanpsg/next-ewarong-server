@@ -11,7 +11,7 @@ const Home = () => {
       } catch (error) {
         console.log(error);
 
-        Router.replace("/login");
+        Router.replace("/landing");
       }
     }, 1000);
   });

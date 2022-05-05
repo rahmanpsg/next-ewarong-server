@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Baloo2';
+  src: url('/fonts/Baloo2-Regular.ttf');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Baloo2';
+  src: url('/fonts/Baloo2-Bold.ttf');
+  font-style: medium;
+  font-weight: 500;
+  font-display: swap;
+}
+
 @media (min-width: 768px) {
   .overflow-x-auto {
     overflow: visible !important;

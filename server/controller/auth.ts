@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Model } from "mongoose";
+import { Model, Error } from "mongoose";
 import { IUser } from "../models/user";
 import jsonwebtoken from "jsonwebtoken";
 
@@ -18,6 +18,16 @@ class AuthController {
         return res
           .status(404)
           .send({ error: true, message: "User tidak ditemukan" });
+      }
+
+      // cek user aktif
+      if (!user.aktif) {
+        return res
+          .status(404)
+          .send({
+            error: true,
+            message: "Akun anda belum diaktifkan oleh admin",
+          });
       }
 
       // Create token
@@ -41,6 +51,46 @@ class AuthController {
       });
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  async registrasi(req: Request, res: Response) {
+    try {
+      const { nik, nama, alamat, telpon, username, password, role } = req.body;
+
+      const user = await userModel.create({
+        nik,
+        nama,
+        alamat,
+        telpon,
+        username,
+        password,
+        role,
+      });
+
+      res.status(200).send({
+        error: false,
+        message: "Registrasi berhasil",
+        data: user,
+      });
+    } catch (error: any) {
+      if ((error as Error.ValidationError).name === "ValidationError") {
+        let errors: any = {};
+
+        Object.keys(error.errors).forEach((key) => {
+          errors[key] = error.errors[key].message;
+        });
+
+        return res
+          .status(400)
+          .send({ error: true, message: "Registrasi Gagal", errors });
+      }
+
+      res.status(500).send({
+        error: true,
+        message: "Terjadi masalah di server",
+        data: error,
+      });
     }
   }
 
