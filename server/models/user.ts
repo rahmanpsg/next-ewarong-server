@@ -10,7 +10,7 @@ export interface IUser extends Document {
   alamat: string;
   fotoUrl: string;
   saldo: number;
-  role: string; //admin, agen, masyarakat
+  role: string; //admin, agen, user
   aktif: boolean;
 }
 
@@ -19,26 +19,37 @@ const schema: Schema = new Schema<IUser>(
     nik: {
       type: Number,
       unique: true,
-      minlength: 16,
-      maxlength: 16,
+      minlength: [16, "NIK harus 16 digit"],
+      maxlength: [16, "NIK harus 16 digit"],
       required: true,
-      validate: async (value: Number) => {
+      validate: async function (value: Number) {
+        const user = await models.User.findById((this as IUser).id);
+
+        if (user != null && user.nik === value) return;
+
         const count = await models.User.countDocuments({ nik: value });
+
         if (count > 0) throw new Error("sudah terdaftar");
       },
     },
     ktm: {
       type: Number,
-      unique: true,
-      validate: async (value: Number) => {
+      validate: async function (value: Number) {
+        const user = await models.User.findById((this as IUser).id);
+
+        if (user != null && user.ktm === value) return;
+
         const count = await models.User.countDocuments({ ktm: value });
         if (count > 0) throw new Error("sudah terdaftar");
       },
     },
     username: {
       type: String,
-      unique: true,
-      validate: async (value: Number) => {
+      validate: async function (value: String) {
+        const user = await models.User.findById((this as IUser).id);
+
+        if (user != null && user.username === value) return;
+
         const count = await models.User.countDocuments({ username: value });
         if (count > 0) throw new Error("sudah terdaftar");
       },
@@ -49,7 +60,11 @@ const schema: Schema = new Schema<IUser>(
       type: String,
       unique: true,
       required: true,
-      validate: async (value: Number) => {
+      validate: async function (value: Number) {
+        const user = await models.User.findById((this as IUser).id);
+
+        if (user != null && user.telpon === value) return;
+
         const count = await models.User.countDocuments({ telpon: value });
         if (count > 0) throw new Error("sudah terdaftar");
       },
@@ -59,8 +74,8 @@ const schema: Schema = new Schema<IUser>(
     saldo: Number,
     role: {
       type: String,
-      enum: ["admin", "agen", "masyarakat"],
-      default: "masyarakat",
+      enum: ["admin", "agen", "user"],
+      default: "user",
       required: true,
     },
     aktif: {

@@ -1,11 +1,8 @@
-import Router from "next/router";
 import Image from "next/image";
+import Link from "next/link";
+import { IoLogInOutline } from "react-icons/io5";
 
 const Landing = () => {
-  const login = async () => {
-    Router.replace("/login");
-  };
-
   return (
     <div>
       <div className="navbar bg-primary">
@@ -20,16 +17,20 @@ const Landing = () => {
           </a>
         </div>
         <div className="flex-none">
-          <button className="btn btn-ghost gap-2 text-white" onClick={login}>
-            Masuk
-          </button>
+          <Link href="/login">
+            <a className="btn btn-ghost gap-2 text-white">
+              Masuk <IoLogInOutline size={24} />
+            </a>
+          </Link>
         </div>
       </div>
-      <div className="mb-auto">
-        <div className="p-4">
-          <div className="flex justify-center items-center space-x-2">
-            Selamat Datang di Website Dinas Sosial Kota Parepare - Sulawesi
-            Selatan
+      <div className="hero h-80">
+        <div className="text-center hero-content">
+          <div className="max-w-md">
+            <h1 className="mb-5 text-5xl font-bold">Selamat Datang</h1>
+            <p className="mb-5">
+              Website Dinas Sosial Kota Parepare - Sulawesi Selatan
+            </p>
           </div>
         </div>
       </div>

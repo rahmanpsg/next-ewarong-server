@@ -3,7 +3,6 @@ import Alert from "./Alert";
 import { FaSignInAlt } from "react-icons/fa";
 import { AuthState } from "types";
 import Router from "next/router";
-import Image from "next/image";
 
 type LoginFormProps = {
   authState: AuthState;
@@ -49,20 +48,19 @@ class LoginForm extends React.Component<LoginFormProps> {
       <section className="h-screen">
         <div className="px-6 h-full text-gray-800">
           <div className="flex xl:justify-center lg:justify-between justify-center items-center flex-wrap h-full g-6">
-            <div className="grow-0 shrink-1 md:shrink-0 basis-auto xl:w-6/12 lg:w-6/12 md:w-9/12 mb-12 md:mb-0">
-              <Image src="/images/logo.png" width="200" height="200" />
-            </div>
-            <div className="xl:ml-20 xl:w-5/12 lg:w-5/12 md:w-8/12 mb-12 md:mb-0">
+            <div className="xl:ml-20 xl:w-5/12 lg:w-5/12 md:w-8/12 mb-12 md:mb-0 bg-secondary p-8 rounded-lg">
               {this.state.response.show && (
-                <Alert
-                  error={this.state.response.error}
-                  message={this.state.response.message}
-                />
+                <div className="mb-4">
+                  <Alert
+                    error={this.state.response.error}
+                    message={this.state.response.message}
+                  />
+                </div>
               )}
 
               <form onSubmit={this.submitForm}>
                 <div className="flex flex-row items-center justify-center lg:justify-start">
-                  <p className="text-lg mb-0 mr-4">
+                  <p className="text-lg mb-0 mr-4 font-bold text-white">
                     Aplikasi Transaksi Keluarga Penerima Manfaat (KPM) Program
                     Sembako Kota Parepare
                   </p>
@@ -93,14 +91,14 @@ class LoginForm extends React.Component<LoginFormProps> {
                 </div>
                 <div className="flex justify-between">
                   {this.state.loading ? (
-                    <button className="btn btn-outline btn-primary loading">
+                    <button className="btn btn-outline bg-white  loading">
                       loading
                     </button>
                   ) : (
                     <button
                       type="submit"
                       disabled={this.state.loading}
-                      className="btn btn-outline btn-primary gap-2"
+                      className="btn btn-outline bg-white gap-2"
                     >
                       <div className="self-center inline flex-shrink-0 mr-3">
                         <FaSignInAlt />

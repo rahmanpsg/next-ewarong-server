@@ -2,12 +2,7 @@ import React from "react";
 import { withRouter, NextRouter } from "next/router";
 
 import Link from "next/link";
-import {
-  TiHomeOutline,
-  TiGroupOutline,
-  TiBook,
-  TiTicket,
-} from "react-icons/ti";
+import { FaHome, FaUserTie, FaUsers, FaShoppingBasket } from "react-icons/fa";
 
 interface WithRouterProps {
   router: NextRouter;
@@ -39,35 +34,35 @@ class Drawer extends React.Component<MyComponentProps> {
       {
         text: "Home",
         path: "/admin",
-        icon: <TiHomeOutline />,
+        icon: <FaHome />,
       },
       {
-        text: "Data Pelanggan",
-        path: "/admin/pelanggan",
-        icon: <TiGroupOutline />,
+        text: "Data Agen",
+        path: "/admin/agen",
+        icon: <FaUserTie />,
       },
       {
-        text: "Data Pengaduan",
-        path: "/admin/pengaduan",
-        icon: <TiBook />,
+        text: "Data User",
+        path: "/admin/user",
+        icon: <FaUsers />,
       },
       {
-        text: "Data Pembayaran",
-        path: "/admin/pembayaran",
-        icon: <TiTicket />,
+        text: "Data Transaksi",
+        path: "/admin/transaksi",
+        icon: <FaShoppingBasket />,
       },
     ];
 
     return (
       <div className="drawer-side">
         <label htmlFor="my-drawer" className="drawer-overlay"></label>
-        <ul className="menu p-4 overflow-y-auto lg:w-72 w-80 bg-primary text-base-content">
+        <ul className="menu p-4 overflow-y-auto lg:w-72 w-80 bg-secondary text-white">
           {listMenu.map((menu: MenuType, index) => (
             <li key={index}>
               <Link href={menu.path}>
                 <a
                   className={
-                    this.state.menuActive == menu.path ? "bg-green-100" : ""
+                    this.state.menuActive == menu.path ? "bg-primary" : ""
                   }
                   onClick={() => {
                     this.handleChange(menu.path);
@@ -75,11 +70,6 @@ class Drawer extends React.Component<MyComponentProps> {
                 >
                   {menu.icon}
                   {menu.text}
-                  {/* {menu.path == "/admin/pengaduan" && (
-                    <span className="indicator-item badge badge-secondary motion-safe:animate-bounce">
-                      +1
-                    </span>
-                  )} */}
                 </a>
               </Link>
             </li>

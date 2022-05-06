@@ -8,7 +8,7 @@ class AuthService {
 
   async login(username: string, password: string) {
     try {
-      const res = await axios.post(this.END_POINT + "login", {
+      const res = await axios.post(this.END_POINT + "login/admin", {
         username,
         password,
       });

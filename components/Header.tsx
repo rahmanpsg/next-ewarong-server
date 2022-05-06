@@ -1,7 +1,6 @@
 import AuthService from "@/services/auth";
 import Router from "next/router";
-import { GrLogout } from "react-icons/gr";
-import { TiThLargeOutline } from "react-icons/ti";
+import { IoMenu, IoExitOutline } from "react-icons/io5";
 
 const Header = () => {
   const logout = async () => {
@@ -14,7 +13,7 @@ const Header = () => {
   };
 
   return (
-    <div className="navbar bg-primary">
+    <div className="navbar bg-secondary text-white">
       <div className="flex-none">
         <label
           htmlFor="my-drawer"
@@ -22,18 +21,17 @@ const Header = () => {
         >
           <input type="checkbox" />
 
-          <TiThLargeOutline size={18} />
+          <IoMenu size={24} />
         </label>
       </div>
       <div className="flex-1">
         <a className="normal-case text-xl">E-Warong</a>
       </div>
       <div className="flex-none">
-        <button className="btn btn-ghost" onClick={logout}>
-          <div className="self-center inline flex-shrink-0">
-            <GrLogout size={18} />
-          </div>
-        </button>
+        <a className="btn btn-ghost gap-2" onClick={logout}>
+          Keluar
+          <IoExitOutline size={24} />
+        </a>
       </div>
     </div>
   );

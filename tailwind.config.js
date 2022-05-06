@@ -1,3 +1,5 @@
+const defaultTheme = require("tailwindcss/defaultTheme");
+
 module.exports = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx}",
@@ -6,6 +8,9 @@ module.exports = {
 
   theme: {
     extend: {
+      fontFamily: {
+        Baloo2: ["Baloo2", ...defaultTheme.fontFamily.sans],
+      },
       keyframes: {
         backInOutRight: {
           "0%": {
@@ -55,7 +60,7 @@ module.exports = {
       },
     },
   },
-  plugins: [require("daisyui")],
+  plugins: [require("@tailwindcss/typography"), require("daisyui")],
   daisyui: {
     themes: [
       {

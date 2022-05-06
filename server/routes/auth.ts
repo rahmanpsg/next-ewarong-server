@@ -16,6 +16,11 @@ router.post(
   AuthController.login
 );
 router.post(
+  "/login/admin",
+  validate([body("username").notEmpty(), body("password").notEmpty()]),
+  AuthController.loginAdmin
+);
+router.post(
   "/registrasi",
   validate([
     body("nik").isInt(),
