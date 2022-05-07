@@ -5,7 +5,7 @@ export type AuthState = {
 export type Users = {
   _id: string;
   nik: number;
-  ktm: number;
+  kpm: number;
   saldo: number;
   nama: string;
   telpon: number;

@@ -1,12 +1,12 @@
 import UserService from "../../services/user";
 
 export const agenActionTypes = {
-  GET: "GET_USER",
-  ADD: "ADD_USER",
-  UPDATE: "UPDATE_USER",
-  DELETE: "DELETE_USER",
-  ERROR: "ERROR_USER",
-  RESET: "RESET_USER",
+  GET: "GET_AGEN",
+  ADD: "ADD_AGEN",
+  UPDATE: "UPDATE_AGEN",
+  DELETE: "DELETE_AGEN",
+  ERROR: "ERROR_AGEN",
+  RESET: "RESET_AGEN",
 };
 
 export const getAgens = () => async (dispatch: any) => {

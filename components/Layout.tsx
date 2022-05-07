@@ -4,7 +4,7 @@ import Drawer from "./Drawer";
 
 const Layout = ({ children }: any) => {
   return (
-    <div className="drawer drawer-mobile h-screen w-full">
+    <div className="drawer drawer-mobile h-screen w-full font-Baloo2">
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col">
         <Header />

@@ -12,9 +12,21 @@ router.get(
 );
 
 router.get(
-  "/masyarakat/:id",
+  "/user/:id",
   validate([param("id").notEmpty()]),
-  PesananController.getAllPesananMasyarakat
+  PesananController.getAllPesananUser
+);
+
+router.get(
+  "/selesai/agen/:id",
+  validate([param("id").notEmpty()]),
+  PesananController.getAllTransaksiAgen
+);
+
+router.get(
+  "/selesai/user/:id",
+  validate([param("id").notEmpty()]),
+  PesananController.getAllTransaksiUser
 );
 
 router.get("/:id", validate([param("id").isInt()]), PesananController.get);
@@ -22,8 +34,8 @@ router.get("/:id", validate([param("id").isInt()]), PesananController.get);
 router.post(
   "/",
   validate([
-    body("masyarakat").notEmpty().withMessage("ID masyarakat harus diisi"),
-    body("agen").notEmpty().withMessage("ID agen harus diisi"),
+    body("user").notEmpty().withMessage("ID user tidak boleh kosong"),
+    body("agen").notEmpty().withMessage("ID agen tidak boleh kosong"),
     body("sembako").notEmpty(),
     body("jumlah").isInt(),
   ]),
@@ -34,11 +46,11 @@ router.put(
   "/konfirmasi/:role/:id",
   validate([
     param("role").notEmpty(),
-    check("role").isIn(["agen", "masyarakat"]),
+    check("role").isIn(["agen", "user"]),
     param("id").notEmpty(),
     body("status").isBoolean(),
     body("selesai")
-      .if(param("role").isIn(["masyarakat"]))
+      .if(param("role").isIn(["user"]))
       .isBoolean(),
   ]),
   PesananController.konfirmasi

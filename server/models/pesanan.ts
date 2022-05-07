@@ -2,7 +2,7 @@ import { Schema, Document, model, Types } from "mongoose";
 
 export interface IPesanan extends Document {
   agen: Types.ObjectId;
-  masyarakat: Types.ObjectId;
+  user: Types.ObjectId;
   sembako: Types.ObjectId;
   harga: number;
   jumlah: number;
@@ -17,7 +17,7 @@ const schema: Schema = new Schema<IPesanan>(
       ref: "User",
       required: true,
     },
-    masyarakat: {
+    user: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,

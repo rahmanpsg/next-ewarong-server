@@ -2,7 +2,7 @@ import { Schema, Document, model, models } from "mongoose";
 
 export interface IUser extends Document {
   nik: number;
-  ktm: number;
+  kpm: number;
   username: string;
   password: string;
   nama: string;
@@ -32,14 +32,14 @@ const schema: Schema = new Schema<IUser>(
         if (count > 0) throw new Error("sudah terdaftar");
       },
     },
-    ktm: {
+    kpm: {
       type: Number,
       validate: async function (value: Number) {
         const user = await models.User.findById((this as IUser).id);
 
-        if (user != null && user.ktm === value) return;
+        if (user != null && user.kpm === value) return;
 
-        const count = await models.User.countDocuments({ ktm: value });
+        const count = await models.User.countDocuments({ kpm: value });
         if (count > 0) throw new Error("sudah terdaftar");
       },
     },

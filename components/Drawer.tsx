@@ -22,11 +22,19 @@ class Drawer extends React.Component<MyComponentProps> {
   };
 
   componentDidMount() {
-    this.handleChange(this.props.router.asPath);
+    this.handleChange(
+      this.props.router.asPath.split("/[")[0].split("/").pop()!
+    );
   }
 
   handleChange = (path: string) => {
-    this.setState({ menuActive: path });
+    this.setState({ menuActive: path.split("/").pop()! });
+  };
+
+  checkMenuActive = (path: string) => {
+    if (this.state.menuActive === path.split("/").pop()!) {
+      return "bg-primary";
+    }
   };
 
   render() {
@@ -46,11 +54,11 @@ class Drawer extends React.Component<MyComponentProps> {
         path: "/admin/user",
         icon: <FaUsers />,
       },
-      {
-        text: "Data Transaksi",
-        path: "/admin/transaksi",
-        icon: <FaShoppingBasket />,
-      },
+      // {
+      //   text: "Data Transaksi",
+      //   path: "/admin/transaksi",
+      //   icon: <FaShoppingBasket />,
+      // },
     ];
 
     return (
@@ -62,7 +70,8 @@ class Drawer extends React.Component<MyComponentProps> {
               <Link href={menu.path}>
                 <a
                   className={
-                    this.state.menuActive == menu.path ? "bg-primary" : ""
+                    // this.state.menuActive == menu.path ? "bg-primary" : ""
+                    this.checkMenuActive(menu.path)
                   }
                   onClick={() => {
                     this.handleChange(menu.path);

@@ -173,8 +173,8 @@ const User = (props: UserProps) => {
       type: "number",
     },
     {
-      name: "ktm",
-      text: "Nomor KTM",
+      name: "kpm",
+      text: "Nomor KPM",
       type: "number",
     },
     {

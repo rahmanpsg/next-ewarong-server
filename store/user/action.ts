@@ -9,11 +9,6 @@ export const userActionTypes = {
   RESET: "RESET_USER",
 };
 
-export const getUser = (id: string) => async (dispatch: any) => {
-  const res = await UserService.get(id);
-
-  return dispatch({ type: userActionTypes.GET, payload: res });
-};
 
 export const getUsers = () => async (dispatch: any) => {
   const res = await UserService.getAll("user");

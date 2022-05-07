@@ -158,6 +158,10 @@ const Pelanggan = (props: PelangganProps) => {
     setAksi("hapus");
   };
 
+  const detailClick = (row: Irow) => {
+    router.push(`/admin/agen/${row._id}`);
+  };
+
   const headers: HeadersType[] = [
     {
       name: "no",
@@ -242,6 +246,7 @@ const Pelanggan = (props: PelangganProps) => {
         page="Agen"
         headers={headers}
         data={props.agenState.agens}
+        detailClick={detailClick}
         statusClick={statusClick}
         editClick={editClick}
         hapusClick={hapusClick}

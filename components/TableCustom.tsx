@@ -26,7 +26,9 @@ export type HeadersType = {
 type TableCustomProps = {
   headers: HeadersType[];
   data: Array<Users>;
-  page: String;
+  page: string;
+  tableHeader?: string;
+  noContentMessage?: string;
   detailClick?: (row: Irow) => void;
   statusClick?: (row: Irow, aktif: boolean) => void;
   editClick?: (row: Irow) => void;
@@ -63,6 +65,12 @@ const TableCustom = (props: TableCustomProps) => {
           {display_value.toString()}
         </Moment>
       );
+    } else if (column.field === "total") {
+      return Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      }).format(row.jumlah * row.harga);
     } else if (column.field === "bulan") {
       return display_value.length > 1
         ? `${display_value[0]} - ${display_value[display_value.length - 1]}`
@@ -207,11 +215,12 @@ const TableCustom = (props: TableCustomProps) => {
 
   return (
     <Table
+      table_header={props.tableHeader}
       columns={columns}
       rows={rows}
       row_render={rowcheck}
       per_page={7}
-      no_content_text="Tidak ada data"
+      no_content_text={props.noContentMessage ?? "Tidak ada data"}
       styling={style}
       should_export={false}
     />

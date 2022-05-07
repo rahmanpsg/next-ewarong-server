@@ -18,6 +18,7 @@ class UserController {
           })
         );
       }
+
       res.status(200).send(
         new ApiResponse({
           error: false,
@@ -46,18 +47,18 @@ class UserController {
 
   async postUser(req: Request, res: Response) {
     try {
-      const { nik, nama, alamat, telpon, ktm, password } = req.body;
+      const { nik, nama, alamat, telpon, kpm, password } = req.body;
 
       const user = await userModel.create({
         nik,
         nama,
         alamat,
         telpon,
-        ktm,
+        kpm,
         password,
         aktif: true,
         role: "user",
-        saldo: 0,
+        saldo: 200000,
       });
 
       res.status(200).send(
@@ -113,12 +114,12 @@ class UserController {
         );
       }
 
-      const { nik, ktm, nama, alamat, telpon, username, password } = req.body;
+      const { nik, kpm, nama, alamat, telpon, username, password } = req.body;
 
       const update = JSON.parse(
         JSON.stringify({
           nik,
-          ktm,
+          kpm,
           nama,
           alamat,
           telpon,

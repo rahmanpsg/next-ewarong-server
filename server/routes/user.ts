@@ -28,7 +28,7 @@ router.post(
     body("nama").notEmpty(),
     body("nik").isInt().notEmpty(),
     body("telpon").isMobilePhone("id-ID").notEmpty(),
-    body("ktm").notEmpty(),
+    body("kpm").notEmpty(),
     body("password").notEmpty(),
     body("alamat").notEmpty(),
   ]),
