@@ -2,7 +2,7 @@ import React from "react";
 import { withRouter, NextRouter } from "next/router";
 
 import Link from "next/link";
-import { FaHome, FaUserTie, FaUsers, FaShoppingBasket } from "react-icons/fa";
+import { FaHome, FaUserTie, FaUsers } from "react-icons/fa";
 
 interface WithRouterProps {
   router: NextRouter;
