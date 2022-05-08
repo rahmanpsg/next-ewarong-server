@@ -70,7 +70,7 @@ const Home = (props: HomeProps) => {
 export const getServerSideProps = wrapper.getServerSideProps(
   // @ts-ignore
   (store) => async () => {
-    const END_POINT = process.env.baseURL + "api/total/";
+    const END_POINT = process.env.NEXT_PUBLIC_BACKEND_URL + "/api/total/";
     const res = await fetch(END_POINT);
 
     const json = await res.json();
