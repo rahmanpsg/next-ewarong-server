@@ -30,7 +30,7 @@ class PesananController {
       .find({
         agen,
       })
-      .populate("user", "fotoUrl ktm nama saldo")
+      .populate("user", "fotoUrl kpm nama saldo")
       .populate("sembako", "nama harga fotoUrl")
       .sort({ updatedAt: -1 });
 
@@ -71,7 +71,7 @@ class PesananController {
           $lt: new Date(`${tahun}-${bulan}-31`),
         },
       })
-      .populate("user", "kpm nama")
+      .populate("user", "nama")
       .populate("sembako", "nama")
       .sort({ updatedAt: -1 });
 
