@@ -71,7 +71,7 @@ class PesananController {
           $lt: new Date(`${tahun}-${bulan}-31`),
         },
       })
-      .populate("user", "nama")
+      .populate("user", "kpm nama")
       .populate("sembako", "nama")
       .sort({ updatedAt: -1 });
 
