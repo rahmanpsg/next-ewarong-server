@@ -84,13 +84,13 @@ const User = (props: UserProps) => {
   useEffect(() => {
     switch (aksi) {
       case "hapus":
-        setMessageAksi("Data agen akan di hapus?");
+        setMessageAksi("Data user akan di hapus?");
         break;
       case "aktif":
-        setMessageAksi("Data agen akan di aktifkan?");
+        setMessageAksi("Data user akan di aktifkan?");
         break;
       case "nonaktif":
-        setMessageAksi("Data agen akan di nonaktifkan?");
+        setMessageAksi("Data user akan di nonaktifkan?");
         break;
     }
   }, [aksi]);
