@@ -6,164 +6,167 @@ import jsonwebtoken from "jsonwebtoken";
 const userModel: Model<IUser> = require("../models/user");
 
 class AuthController {
-  async login(req: Request, res: Response) {
-    try {
-      const { ktm, username, password } = req.body;
+	async login(req: Request, res: Response) {
+		try {
+			const { ktm, username, password } = req.body;
 
-      const find = { ktm, username, password };
+			const find = { ktm, username, password };
 
-      const user = await userModel.findOne(find);
+			const user = await userModel.findOne(find);
 
-      if (!user) {
-        return res
-          .status(404)
-          .send({ error: true, message: "User tidak ditemukan" });
-      }
+			if (!user) {
+				return res
+					.status(404)
+					.send({ error: true, message: "User tidak ditemukan" });
+			}
 
-      // cek user aktif
-      if (!user.aktif) {
-        return res.status(404).send({
-          error: true,
-          message: "Akun anda belum diaktifkan oleh admin",
-        });
-      }
+			// cek user aktif
+			if (!user.aktif) {
+				return res.status(404).send({
+					error: true,
+					message: "Akun anda belum diaktifkan oleh admin",
+				});
+			}
 
-      // Create token
-      const token = jsonwebtoken.sign(
-        { id: user._id },
-        process.env.TOKEN_KEY!,
-        {
-          expiresIn: "7 days",
-        }
-      );
+			// Create token
+			const token = jsonwebtoken.sign(
+				{ id: user._id },
+				process.env.TOKEN_KEY!,
+				{
+					expiresIn: "7 days",
+				}
+			);
 
-      const json: any = user.toJSON();
+			const json: any = user.toJSON();
 
-      json.id = user._id;
-      json.token = token;
+			json.id = user._id;
+			json.token = token;
 
-      res.status(200).send({
-        error: false,
-        message: "Anda berhasil login",
-        data: json,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
+			res.status(200).send({
+				error: false,
+				message: "Anda berhasil login",
+				data: json,
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	}
 
-  async loginAdmin(req: Request, res: Response) {
-    try {
-      const { username, password } = req.body;
+	async loginAdmin(req: Request, res: Response) {
+		try {
+			const { username, password } = req.body;
 
-      const user = await userModel.findOne({ username, password });
+			const user = await userModel.findOne({ username, password });
 
-      if (!user) {
-        return res
-          .status(404)
-          .send({ error: true, message: "User tidak ditemukan" });
-      }
+			if (!user) {
+				return res
+					.status(404)
+					.send({ error: true, message: "User tidak ditemukan" });
+			}
 
-      // cek role admin
-      if (user.role != "admin") {
-        return res.status(404).send({
-          error: true,
-          message: "Akun anda tidak memiliki akses admin",
-        });
-      }
+			// cek role admin
+			if (user.role != "admin") {
+				return res.status(404).send({
+					error: true,
+					message: "Akun anda tidak memiliki akses admin",
+				});
+			}
 
-      // Create token
-      const token = jsonwebtoken.sign(
-        { id: user._id },
-        process.env.TOKEN_KEY!,
-        {
-          expiresIn: "7 days",
-        }
-      );
+			// Create token
+			const token = jsonwebtoken.sign(
+				{ id: user._id },
+				process.env.TOKEN_KEY!,
+				{
+					expiresIn: "7 days",
+				}
+			);
 
-      const json: any = user.toJSON();
+			const json: any = user.toJSON();
 
-      json.id = user._id;
-      json.token = token;
+			json.id = user._id;
+			json.token = token;
 
-      res.status(200).send({
-        error: false,
-        message: "Anda berhasil login",
-        data: json,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
+			res.status(200).send({
+				error: false,
+				message: "Anda berhasil login",
+				data: json,
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	}
 
-  async registrasi(req: Request, res: Response) {
-    try {
-      const { nik, nama, alamat, telpon, username, password, role } = req.body;
+	async registrasi(req: Request, res: Response) {
+		try {
+			const { nama, namaToko, alamat, telpon, username, password, role } =
+				req.body;
 
-      const user = await userModel.create({
-        nik,
-        nama,
-        alamat,
-        telpon,
-        username,
-        password,
-        role,
-      });
+			console.log(namaToko);
 
-      res.status(200).send({
-        error: false,
-        message: "Registrasi berhasil",
-        data: user,
-      });
-    } catch (error: any) {
-      if ((error as Error.ValidationError).name === "ValidationError") {
-        let errors: any = {};
+			const user = await userModel.create({
+				nama,
+				namaToko,
+				alamat,
+				telpon,
+				username,
+				password,
+				role,
+			});
 
-        Object.keys(error.errors).forEach((key) => {
-          errors[key] = error.errors[key].message;
-        });
+			res.status(200).send({
+				error: false,
+				message: "Registrasi berhasil",
+				data: user,
+			});
+		} catch (error: any) {
+			if ((error as Error.ValidationError).name === "ValidationError") {
+				let errors: any = {};
 
-        return res
-          .status(400)
-          .send({ error: true, message: "Registrasi Gagal", errors });
-      }
+				Object.keys(error.errors).forEach((key) => {
+					errors[key] = error.errors[key].message;
+				});
 
-      res.status(500).send({
-        error: true,
-        message: "Terjadi masalah di server",
-        data: error,
-      });
-    }
-  }
+				return res
+					.status(400)
+					.send({ error: true, message: "Registrasi Gagal", errors });
+			}
 
-  async verifyToken(req: Request, res: Response) {
-    const token =
-      req.body.token || req.query.token || req.headers["x-access-token"];
+			res.status(500).send({
+				error: true,
+				message: "Terjadi masalah di server",
+				data: error,
+			});
+		}
+	}
 
-    if (!token) {
-      return res
-        .status(404)
-        .send({ error: true, message: "Token diperlukan untuk otentikasi" });
-    }
+	async verifyToken(req: Request, res: Response) {
+		const token =
+			req.body.token || req.query.token || req.headers["x-access-token"];
 
-    try {
-      const decoded = jsonwebtoken.verify(token, process.env.TOKEN_KEY!);
+		if (!token) {
+			return res
+				.status(404)
+				.send({ error: true, message: "Token diperlukan untuk otentikasi" });
+		}
 
-      const user = await userModel.findById(
-        (decoded as jsonwebtoken.JwtPayload).id
-      );
+		try {
+			const decoded = jsonwebtoken.verify(token, process.env.TOKEN_KEY!);
 
-      res.status(200).send({
-        error: false,
-        message: "Token valid",
-        data: user,
-      });
-    } catch (err) {
-      return res
-        .status(401)
-        .send({ error: true, message: "Token Tidak Valid" });
-    }
-  }
+			const user = await userModel.findById(
+				(decoded as jsonwebtoken.JwtPayload).id
+			);
+
+			res.status(200).send({
+				error: false,
+				message: "Token valid",
+				data: user,
+			});
+		} catch (err) {
+			return res
+				.status(401)
+				.send({ error: true, message: "Token Tidak Valid" });
+		}
+	}
 }
 
 export default new AuthController();
