@@ -26,7 +26,7 @@ router.post(
 	"/user",
 	validate([
 		body("nama").notEmpty(),
-		body("nik").isInt().notEmpty(),
+		// body("nik").isInt().notEmpty(),
 		body("telpon").isMobilePhone("id-ID").notEmpty(),
 		body("kpm").notEmpty(),
 		body("password").notEmpty(),

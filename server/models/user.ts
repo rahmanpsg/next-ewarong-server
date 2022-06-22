@@ -1,7 +1,6 @@
 import { Schema, Document, model, models } from "mongoose";
 
 export interface IUser extends Document {
-	nik: number;
 	kpm: number;
 	username: string;
 	password: string;
@@ -17,24 +16,6 @@ export interface IUser extends Document {
 
 const schema: Schema = new Schema<IUser>(
 	{
-		nik: {
-			type: Number,
-			// unique: true,
-			minlength: [16, "NIK harus 16 digit"],
-			maxlength: [16, "NIK harus 16 digit"],
-			required: false,
-			validate: async function (value: Number) {
-				if (value == null) return;
-
-				const user = await models.User.findById((this as IUser).id);
-
-				if (user != null && user.nik === value) return;
-
-				const count = await models.User.countDocuments({ nik: value });
-
-				if (count > 0) throw new Error("sudah terdaftar");
-			},
-		},
 		kpm: {
 			type: Number,
 			validate: async function (value: Number) {
@@ -90,5 +71,17 @@ const schema: Schema = new Schema<IUser>(
 	},
 	{ timestamps: true }
 );
+
+schema.pre("deleteOne", async function (next) {
+	const pesanan = model("Pesanan");
+	const sembako = model("Sembako");
+
+	const id = this.getQuery()["_id"];
+
+	await pesanan.deleteMany({ user: id });
+	await sembako.deleteMany({ agen: id });
+
+	next();
+});
 
 module.exports = model("User", schema);

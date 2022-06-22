@@ -47,10 +47,9 @@ class UserController {
 
 	async postUser(req: Request, res: Response) {
 		try {
-			const { nik, nama, alamat, telpon, kpm, password } = req.body;
+			const { nama, alamat, telpon, kpm, password } = req.body;
 
 			const user = await userModel.create({
-				nik,
 				nama,
 				alamat,
 				telpon,
