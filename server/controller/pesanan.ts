@@ -9,214 +9,214 @@ const sembakoModel: Model<ISembako> = require("../models/sembako");
 const userModel: Model<IUser> = require("../models/user");
 
 class PesananController {
-  async get(req: Request, res: Response) {
-    try {
-      const pesanan = await pesananModel.findById(req.params.id);
-      if (!pesanan) {
-        return res
-          .status(404)
-          .send({ error: true, message: "Data pesanan tidak ditemukan" });
-      }
-      res.status(200).send({ error: false, data: pesanan });
-    } catch (error) {
-      console.log(error);
-    }
-  }
+	async get(req: Request, res: Response) {
+		try {
+			const pesanan = await pesananModel.findById(req.params.id);
+			if (!pesanan) {
+				return res
+					.status(404)
+					.send({ error: true, message: "Data pesanan tidak ditemukan" });
+			}
+			res.status(200).send({ error: false, data: pesanan });
+		} catch (error) {
+			console.log(error);
+		}
+	}
 
-  async getAllPesananAgen(req: Request, res: Response) {
-    const agen = req.params.id;
+	async getAllPesananAgen(req: Request, res: Response) {
+		const agen = req.params.id;
 
-    const pesanans = await pesananModel
-      .find({
-        agen,
-      })
-      .populate("user", "fotoUrl kpm nama saldo")
-      .populate("sembako", "nama harga fotoUrl")
-      .sort({ updatedAt: -1 });
+		const pesanans = await pesananModel
+			.find({
+				agen,
+			})
+			.populate("user", "fotoUrl kpm nama saldo")
+			.populate("sembako", "nama harga fotoUrl")
+			.sort({ updatedAt: -1 });
 
-    res.send({
-      error: false,
-      data: pesanans,
-    });
-  }
+		res.send({
+			error: false,
+			data: pesanans,
+		});
+	}
 
-  async getAllPesananUser(req: Request, res: Response) {
-    const user = req.params.id;
+	async getAllPesananUser(req: Request, res: Response) {
+		const user = req.params.id;
 
-    const pesanans = await pesananModel
-      .find({
-        user,
-      })
-      .populate("agen", "fotoUrl nama alamat")
-      .populate("sembako", "nama harga fotoUrl")
-      .sort({ updatedAt: -1 });
+		const pesanans = await pesananModel
+			.find({
+				user,
+			})
+			.populate("agen", "fotoUrl nama namaToko alamat")
+			.populate("sembako", "nama harga fotoUrl")
+			.sort({ updatedAt: -1 });
 
-    res.send({
-      error: false,
-      data: pesanans,
-    });
-  }
+		res.send({
+			error: false,
+			data: pesanans,
+		});
+	}
 
-  async getAllTransaksiAgen(req: Request, res: Response) {
-    const agen = req.params.id;
+	async getAllTransaksiAgen(req: Request, res: Response) {
+		const agen = req.params.id;
 
-    const { tahun, bulan } = req.query;
+		const { tahun, bulan } = req.query;
 
-    const pesanans = await pesananModel
-      .find({
-        agen,
-        selesai: true,
-        updatedAt: {
-          $gte: new Date(`${tahun}-${bulan}-01`),
-          $lt: new Date(`${tahun}-${bulan}-31`),
-        },
-      })
-      .populate("user", "nama")
-      .populate("sembako", "nama")
-      .sort({ updatedAt: -1 });
+		const pesanans = await pesananModel
+			.find({
+				agen,
+				selesai: true,
+				updatedAt: {
+					$gte: new Date(`${tahun}-${bulan}-01`),
+					$lt: new Date(`${tahun}-${bulan}-31`),
+				},
+			})
+			.populate("user", "nama")
+			.populate("sembako", "nama")
+			.sort({ updatedAt: -1 });
 
-    // hitung total pendapatan
-    let pendapatan = 0;
-    for (const pesanan of pesanans) {
-      pendapatan += pesanan.harga * pesanan.jumlah;
-    }
+		// hitung total pendapatan
+		let pendapatan = 0;
+		for (const pesanan of pesanans) {
+			pendapatan += pesanan.harga * pesanan.jumlah;
+		}
 
-    res.send({
-      error: false,
-      data: { transaksi: pesanans, pendapatan },
-    });
-  }
+		res.send({
+			error: false,
+			data: { transaksi: pesanans, pendapatan },
+		});
+	}
 
-  async getAllTransaksiUser(req: Request, res: Response) {
-    const user = req.params.id;
+	async getAllTransaksiUser(req: Request, res: Response) {
+		const user = req.params.id;
 
-    const pesanans = await pesananModel
-      .find({
-        user,
-        selesai: true,
-      })
-      .populate("agen", "nama")
-      .populate("sembako", "nama")
-      .sort({ updatedAt: -1 });
+		const pesanans = await pesananModel
+			.find({
+				user,
+				selesai: true,
+			})
+			.populate("agen", "nama")
+			.populate("sembako", "nama")
+			.sort({ updatedAt: -1 });
 
-    res.send({
-      error: false,
-      data: pesanans,
-    });
-  }
+		res.send({
+			error: false,
+			data: pesanans,
+		});
+	}
 
-  async post(req: Request, res: Response) {
-    try {
-      const { user, agen, sembako, jumlah } = req.body;
+	async post(req: Request, res: Response) {
+		try {
+			const { user, agen, sembako, jumlah } = req.body;
 
-      // validasi stok
-      const sembakoData = await sembakoModel.findById(sembako);
+			// validasi stok
+			const sembakoData = await sembakoModel.findById(sembako);
 
-      if (sembakoData?.stok! < jumlah) {
-        return res
-          .status(400)
-          .send({ error: true, message: "Stok tidak cukup" });
-      }
+			if (sembakoData?.stok! < jumlah) {
+				return res
+					.status(400)
+					.send({ error: true, message: "Stok tidak cukup" });
+			}
 
-      // validasi saldo
-      const userData = await userModel.findById(user);
+			// validasi saldo
+			const userData = await userModel.findById(user);
 
-      if (userData?.saldo! < sembakoData?.harga! * jumlah) {
-        return res
-          .status(400)
-          .send({ error: true, message: "Saldo tidak cukup" });
-      }
+			if (userData?.saldo! < sembakoData?.harga! * jumlah) {
+				return res
+					.status(400)
+					.send({ error: true, message: "Saldo tidak cukup" });
+			}
 
-      const harga = sembakoData?.harga;
+			const harga = sembakoData?.harga;
 
-      const pesanan = await pesananModel.create({
-        user,
-        agen,
-        sembako,
-        harga,
-        jumlah,
-      });
+			const pesanan = await pesananModel.create({
+				user,
+				agen,
+				sembako,
+				harga,
+				jumlah,
+			});
 
-      await pesanan.populate("agen", "fotoUrl nama alamat");
-      await pesanan.populate("sembako", "nama harga fotoUrl");
+			await pesanan.populate("agen", "fotoUrl nama alamat");
+			await pesanan.populate("sembako", "nama harga fotoUrl");
 
-      pesanan.save((err, doc) => {
-        if (err) return res.status(500).send({ error: true, message: err });
+			pesanan.save((err, doc) => {
+				if (err) return res.status(500).send({ error: true, message: err });
 
-        res.status(200).send({
-          error: false,
-          message: "Data pesanan berhasil disimpan",
-          data: doc,
-        });
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500).send({
-        error: true,
-        message: "Data gagal ditambahkan",
-      });
-    }
-  }
+				res.status(200).send({
+					error: false,
+					message: "Data pesanan berhasil disimpan",
+					data: doc,
+				});
+			});
+		} catch (error) {
+			console.log(error);
+			res.status(500).send({
+				error: true,
+				message: "Data gagal ditambahkan",
+			});
+		}
+	}
 
-  async konfirmasi(req: Request, res: Response) {
-    try {
-      const pesanan = await pesananModel.findById(req.params.id);
-      if (!pesanan) {
-        return res
-          .status(404)
-          .send({ error: true, message: "Data pesanan tidak ditemukan" });
-      }
+	async konfirmasi(req: Request, res: Response) {
+		try {
+			const pesanan = await pesananModel.findById(req.params.id);
+			if (!pesanan) {
+				return res
+					.status(404)
+					.send({ error: true, message: "Data pesanan tidak ditemukan" });
+			}
 
-      const { status, selesai } = req.body;
+			const { status, selesai } = req.body;
 
-      const sembakoData = await sembakoModel.findById(pesanan.sembako);
+			const sembakoData = await sembakoModel.findById(pesanan.sembako);
 
-      const userData = await userModel.findById(pesanan.user);
+			const userData = await userModel.findById(pesanan.user);
 
-      if (status == true) {
-        // validasi stok
-        if (sembakoData?.stok! < pesanan.jumlah) {
-          return res
-            .status(400)
-            .send({ error: true, message: "Stok tidak cukup" });
-        }
+			if (status == true) {
+				// validasi stok
+				if (sembakoData?.stok! < pesanan.jumlah) {
+					return res
+						.status(400)
+						.send({ error: true, message: "Stok tidak cukup" });
+				}
 
-        // validasi saldo
-        if (userData?.saldo! < pesanan.harga * pesanan.jumlah) {
-          return res
-            .status(400)
-            .send({ error: true, message: "Saldo tidak cukup" });
-        }
-      }
+				// validasi saldo
+				if (userData?.saldo! < pesanan.harga * pesanan.jumlah) {
+					return res
+						.status(400)
+						.send({ error: true, message: "Saldo tidak cukup" });
+				}
+			}
 
-      pesanan.set({ status, selesai });
+			pesanan.set({ status, selesai });
 
-      await pesanan.save();
+			await pesanan.save();
 
-      if (selesai) {
-        // update stok
-        sembakoData!.stok -= pesanan.jumlah;
-        sembakoData!.save();
+			if (selesai) {
+				// update stok
+				sembakoData!.stok -= pesanan.jumlah;
+				sembakoData!.save();
 
-        // update saldo user
-        const saldo = userData!.saldo - sembakoData?.harga! * pesanan.jumlah;
+				// update saldo user
+				const saldo = userData!.saldo - sembakoData?.harga! * pesanan.jumlah;
 
-        userData!.set({
-          saldo,
-        });
+				userData!.set({
+					saldo,
+				});
 
-        userData!.save();
-      }
+				userData!.save();
+			}
 
-      res.status(200).send({
-        error: false,
-        message: "Data pesanan berhasil diupdate",
-        data: pesanan,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
+			res.status(200).send({
+				error: false,
+				message: "Data pesanan berhasil diupdate",
+				data: pesanan,
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	}
 }
 
 export default new PesananController();
