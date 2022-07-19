@@ -10,6 +10,7 @@ router.get(
 	validate([param("role").notEmpty()]),
 	UserController.getAllByRole
 );
+router.get("/kpm", UserController.getAllKpm);
 router.get("/:id", validate([param("id").notEmpty()]), UserController.get);
 router.put("/:id", validate([param("id").notEmpty()]), UserController.put);
 router.put(

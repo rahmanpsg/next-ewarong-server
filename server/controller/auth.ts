@@ -2,15 +2,16 @@ import { Request, Response } from "express";
 import { Model, Error } from "mongoose";
 import { IUser } from "../models/user";
 import jsonwebtoken from "jsonwebtoken";
+import { getSession, sendMessage, formatPhone } from "../whatsapp";
 
 const userModel: Model<IUser> = require("../models/user");
 
 class AuthController {
 	async login(req: Request, res: Response) {
 		try {
-			const { ktm, username, password } = req.body;
+			const { kpm, username, password } = req.body;
 
-			const find = { ktm, username, password };
+			const find = { kpm, username, password };
 
 			const user = await userModel.findOne(find);
 
@@ -165,6 +166,66 @@ class AuthController {
 			return res
 				.status(401)
 				.send({ error: true, message: "Token Tidak Valid" });
+		}
+	}
+
+	async lupaPassword(req: Request, res: Response) {
+		try {
+			// periksa apakah whatsapp terhubung
+			const session = getSession();
+
+			if (!session) {
+				return res.status(404).send({
+					error: true,
+					message:
+						"Layanan tidak tersedia saat ini, silahkan coba beberapa saat lagi",
+				});
+			}
+
+			const { kpm, telpon } = req.body;
+
+			// check kpm
+			const user = await userModel.findOne({ kpm });
+
+			if (!user) {
+				return res.status(404).send({
+					error: true,
+					message: "KPM tidak ditemukan",
+				});
+			}
+
+			// check telpon
+			if (user.telpon != telpon) {
+				return res.status(404).send({
+					error: true,
+					message: "Nomor Telpon tidak sesuai dengan KPM yang terdaftar",
+				});
+			}
+
+			// generate password baru 5 karakter
+			const password = Math.random().toString(36).substring(2, 7);
+
+			// update password
+			await userModel.updateOne({ kpm }, { password });
+
+			// send whatsapp
+			const message = `Halo ${user.nama},\n\nPassword baru anda adalah ${password} \n\nTerima kasih.`;
+
+			await sendMessage(session, formatPhone(user.telpon), message);
+
+			res.status(200).send({
+				error: false,
+				message:
+					"Password baru telah dikirim ke nomor anda, silahkan cek whatsapp",
+			});
+		} catch (error) {
+			console.log(error);
+
+			res.status(500).send({
+				error: true,
+				message: "Terjadi masalah di server",
+				data: error,
+			});
 		}
 	}
 }

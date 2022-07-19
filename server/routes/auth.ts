@@ -10,7 +10,7 @@ router.post(
 	"/login",
 	validate([
 		body("username"),
-		body("ktm").if(body("username").isEmpty()).isInt(),
+		body("kpm").if(body("username").isEmpty()).isInt(),
 		body("password").notEmpty(),
 	]),
 	AuthController.login
@@ -32,6 +32,14 @@ router.post(
 		body("password").notEmpty(),
 	]),
 	AuthController.registrasi
+);
+router.post(
+	"/lupaPassword",
+	validate([
+		body("kpm").notEmpty(),
+		body("telpon").isMobilePhone("id-ID").notEmpty(),
+	]),
+	AuthController.lupaPassword
 );
 
 export default router;

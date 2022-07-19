@@ -30,6 +30,30 @@ class UserController {
 		}
 	}
 
+	async getAllKpm(_: Request, res: Response) {
+		try {
+			const users = await userModel.find(
+				{
+					role: "user",
+				},
+				"kpm"
+			);
+
+			res.send(
+				new ApiResponse({
+					error: false,
+					data: users,
+				})
+			);
+		} catch (error) {
+			res.status(500).send({
+				error: true,
+				message: "Terjadi masalah di server",
+				data: error,
+			});
+		}
+	}
+
 	async getAllByRole(req: Request, res: Response) {
 		const role = req.params.role;
 
