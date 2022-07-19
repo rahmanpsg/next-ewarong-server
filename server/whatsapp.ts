@@ -187,6 +187,10 @@ const sendMessage = async (session: any, jid: string, text: string) => {
 };
 
 const formatPhone = (phone: string) => {
+	if (phone.startsWith("0")) {
+		phone = "+62" + phone.substring(1);
+	}
+
 	if (phone.endsWith("@s.whatsapp.net")) {
 		return phone;
 	}

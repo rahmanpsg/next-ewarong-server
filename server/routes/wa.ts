@@ -37,7 +37,7 @@ router.post("/send", async (_, res) => {
 		} else {
 			const response = await sendMessage(
 				session,
-				formatPhone("+6285255136996"),
+				formatPhone("085255136996"),
 				"Tes bosku"
 			);
 
