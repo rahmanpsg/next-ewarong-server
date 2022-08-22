@@ -3,6 +3,8 @@ import { Model } from "mongoose";
 import { validationError } from "../utils/validation_error";
 import { IUser } from "../models/user";
 import ApiResponse from "../models/api_response";
+import QRCode from "qrcode";
+import { PassThrough } from "stream";
 
 const userModel: Model<IUser> = require("../models/user");
 
@@ -25,6 +27,49 @@ class UserController {
 					data: user,
 				})
 			);
+		} catch (error) {
+			res.status(400).send(validationError(error));
+		}
+	}
+
+	async getQrCode(req: Request, res: Response) {
+		try {
+			const user = await userModel.findById(req.params.id);
+			if (!user) {
+				return res.status(404).send(
+					new ApiResponse({
+						error: true,
+						message: "User tidak ditemukan",
+					})
+				);
+			}
+
+			const content = JSON.stringify({
+				id: user._id,
+				role: user.role,
+			});
+
+			console.log(content);
+
+			const qrStream = new PassThrough();
+
+			await QRCode.toFileStream(qrStream, content, {
+				type: "png",
+				width: 200,
+				errorCorrectionLevel: "H",
+			});
+
+			qrStream.pipe(res);
+
+			// // generate qrcode
+			// const qrcode = await QRCode.toDataURL(user.kode);
+
+			// res.status(200).send(
+			// 	new ApiResponse({
+			// 		error: false,
+			// 		data: user.qrCode,
+			// 	})
+			// );
 		} catch (error) {
 			res.status(400).send(validationError(error));
 		}
@@ -98,14 +143,14 @@ class UserController {
 
 	async postAgen(req: Request, res: Response) {
 		try {
-			const { nama, namaToko, alamat, telpon, username, password } = req.body;
+			const { nama, namaToko, alamat, telpon, kode, password } = req.body;
 
 			const user = await userModel.create({
 				nama,
 				namaToko,
 				alamat,
 				telpon,
-				username,
+				kode,
 				password,
 				aktif: true,
 				role: "agen",
@@ -137,7 +182,7 @@ class UserController {
 				);
 			}
 
-			const { nik, kpm, nama, namaToko, alamat, telpon, username, password } =
+			const { nik, kpm, nama, namaToko, alamat, telpon, kode, password } =
 				req.body;
 
 			const update = JSON.parse(
@@ -148,7 +193,7 @@ class UserController {
 					namaToko,
 					alamat,
 					telpon,
-					username,
+					kode,
 					password,
 				})
 			);

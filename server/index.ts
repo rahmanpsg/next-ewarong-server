@@ -1,6 +1,6 @@
 import next, { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { createServer } from "http";
-// import { init } from "./whatsapp";
+import { callculateSaldoUser } from "./utils/saldo_user";
 
 require("dotenv").config();
 
@@ -13,7 +13,7 @@ const handle: NextApiHandler = appNext.getRequestHandler();
 const database = require("./config/database");
 require("./config/cloudinary");
 
-appNext.prepare().then(() => {
+appNext.prepare().then(async () => {
 	const app = require("./app");
 	const server = createServer(app);
 
@@ -23,7 +23,9 @@ appNext.prepare().then(() => {
 	});
 
 	// Connect to mongodb
-	database.connect();
+	await database.connect();
+
+	callculateSaldoUser();
 
 	server.listen(port, () => {
 		console.log(
@@ -31,10 +33,5 @@ appNext.prepare().then(() => {
 				dev ? "development" : process.env.NODE_ENV
 			}`
 		);
-
-		// setTimeout(() => {
-		// 	// init whatsapp
-		// 	init();
-		// }, 1000);
 	});
 });

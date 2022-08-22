@@ -2,7 +2,7 @@ import { Schema, Document, model, models } from "mongoose";
 
 export interface IUser extends Document {
 	kpm: number;
-	username: string;
+	kode: string;
 	password: string;
 	nama: string;
 	namaToko: string;
@@ -10,8 +10,11 @@ export interface IUser extends Document {
 	alamat: string;
 	fotoUrl: string;
 	saldo: number;
+	lastSaldoUpdated: Date;
 	role: string; //admin, agen, user
 	aktif: boolean;
+	createdAt: Date;
+	updatedAt: Date;
 }
 
 const schema: Schema = new Schema<IUser>(
@@ -27,14 +30,14 @@ const schema: Schema = new Schema<IUser>(
 				if (count > 0) throw new Error("sudah terdaftar");
 			},
 		},
-		username: {
+		kode: {
 			type: String,
 			validate: async function (value: String) {
 				const user = await models.User.findById((this as IUser).id);
 
-				if (user != null && user.username === value) return;
+				if (user != null && user.kode === value) return;
 
-				const count = await models.User.countDocuments({ username: value });
+				const count = await models.User.countDocuments({ kode: value });
 				if (count > 0) throw new Error("sudah terdaftar");
 			},
 		},
@@ -57,6 +60,7 @@ const schema: Schema = new Schema<IUser>(
 		alamat: String,
 		fotoUrl: String,
 		saldo: Number,
+		lastSaldoUpdated: Date,
 		role: {
 			type: String,
 			enum: ["admin", "agen", "user"],

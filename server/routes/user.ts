@@ -10,6 +10,11 @@ router.get(
 	validate([param("role").notEmpty()]),
 	UserController.getAllByRole
 );
+router.get(
+	"/qrcode/:id",
+	validate([param("id").notEmpty()]),
+	UserController.getQrCode
+);
 router.get("/kpm", UserController.getAllKpm);
 router.get("/:id", validate([param("id").notEmpty()]), UserController.get);
 router.put("/:id", validate([param("id").notEmpty()]), UserController.put);
@@ -42,7 +47,7 @@ router.post(
 		body("namaToko").notEmpty(),
 		// body("nik").isInt().notEmpty(),
 		body("telpon").isMobilePhone("id-ID").notEmpty(),
-		body("username").notEmpty(),
+		body("kode").notEmpty(),
 		body("password").notEmpty(),
 		body("alamat").notEmpty(),
 	]),

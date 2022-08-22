@@ -167,7 +167,11 @@ const Pelanggan = (props: PelangganProps) => {
 			name: "no",
 			text: "#",
 		},
-
+		{
+			name: "kode",
+			text: "Kode",
+			type: "text",
+		},
 		{
 			name: "nama",
 			text: "Nama",
@@ -182,12 +186,6 @@ const Pelanggan = (props: PelangganProps) => {
 			name: "telpon",
 			text: "Telpon",
 			type: "tel",
-		},
-		{
-			name: "username",
-			text: "Username",
-			type: "text",
-			hide: true,
 		},
 		{
 			name: "password",
