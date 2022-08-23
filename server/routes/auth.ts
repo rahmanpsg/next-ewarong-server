@@ -9,8 +9,8 @@ router.get("/verify", AuthController.verifyToken);
 router.post(
 	"/login",
 	validate([
-		body("username"),
-		body("kpm").if(body("username").isEmpty()).isInt(),
+		body("kode"),
+		body("kpm").if(body("kode").isEmpty()).isInt(),
 		body("password").notEmpty(),
 	]),
 	AuthController.login
@@ -21,6 +21,11 @@ router.post(
 	AuthController.loginAdmin
 );
 router.post(
+	"/login/qrcode",
+	validate([body("id").notEmpty(), body("role").notEmpty()]),
+	AuthController.loginQRCode
+);
+router.post(
 	"/registrasi",
 	validate([
 		// body("nik").isInt(),
@@ -28,7 +33,6 @@ router.post(
 		body("namaToko").notEmpty(),
 		body("alamat").notEmpty(),
 		body("telpon").isMobilePhone("id-ID").notEmpty(),
-		body("username").notEmpty(),
 		body("password").notEmpty(),
 	]),
 	AuthController.registrasi

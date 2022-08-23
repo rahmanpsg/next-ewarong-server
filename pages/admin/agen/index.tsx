@@ -161,6 +161,7 @@ const Pelanggan = (props: PelangganProps) => {
 	const detailClick = (row: Irow) => {
 		router.push(`/admin/agen/${row._id}`);
 	};
+	
 
 	const headers: HeadersType[] = [
 		{

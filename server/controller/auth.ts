@@ -3,15 +3,16 @@ import { Model, Error } from "mongoose";
 import { IUser } from "../models/user";
 import jsonwebtoken from "jsonwebtoken";
 import { getSession, sendMessage, formatPhone } from "../whatsapp";
+import { generateKodeAgen } from "../utils/kode_agen";
 
 const userModel: Model<IUser> = require("../models/user");
 
 class AuthController {
 	async login(req: Request, res: Response) {
 		try {
-			const { kpm, username, password } = req.body;
+			const { kpm, kode, password } = req.body;
 
-			const find = { kpm, username, password };
+			const find = { kpm, kode, password };
 
 			const user = await userModel.findOne(find);
 
@@ -97,19 +98,62 @@ class AuthController {
 		}
 	}
 
+	async loginQRCode(req: Request, res: Response) {
+		try {
+			const { id, role } = req.body;
+
+			const user = await userModel.findOne({ id, role });
+
+			if (!user) {
+				return res
+					.status(404)
+					.send({ error: true, message: "User tidak ditemukan" });
+			}
+
+			// cek user aktif
+			if (!user.aktif) {
+				return res.status(404).send({
+					error: true,
+					message: "Akun anda belum diaktifkan oleh admin",
+				});
+			}
+
+			// Create token
+			const token = jsonwebtoken.sign(
+				{ id: user._id },
+				process.env.TOKEN_KEY!,
+				{
+					expiresIn: "7 days",
+				}
+			);
+
+			const json: any = user.toJSON();
+
+			json.id = user._id;
+			json.token = token;
+
+			res.status(200).send({
+				error: false,
+				message: "Anda berhasil login",
+				data: json,
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
 	async registrasi(req: Request, res: Response) {
 		try {
-			const { nama, namaToko, alamat, telpon, username, password, role } =
-				req.body;
+			const { nama, namaToko, alamat, telpon, password, role } = req.body;
 
-			console.log(namaToko);
+			const kode = generateKodeAgen();
 
 			const user = await userModel.create({
 				nama,
 				namaToko,
 				alamat,
 				telpon,
-				username,
+				kode,
 				password,
 				role,
 			});

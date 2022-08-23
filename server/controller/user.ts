@@ -49,27 +49,18 @@ class UserController {
 				role: user.role,
 			});
 
-			console.log(content);
-
 			const qrStream = new PassThrough();
 
 			await QRCode.toFileStream(qrStream, content, {
 				type: "png",
 				width: 200,
 				errorCorrectionLevel: "H",
+				color: {
+					dark: "#019267",
+				},
 			});
 
 			qrStream.pipe(res);
-
-			// // generate qrcode
-			// const qrcode = await QRCode.toDataURL(user.kode);
-
-			// res.status(200).send(
-			// 	new ApiResponse({
-			// 		error: false,
-			// 		data: user.qrCode,
-			// 	})
-			// );
 		} catch (error) {
 			res.status(400).send(validationError(error));
 		}
