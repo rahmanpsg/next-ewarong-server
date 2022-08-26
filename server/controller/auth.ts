@@ -100,9 +100,9 @@ class AuthController {
 
 	async loginQRCode(req: Request, res: Response) {
 		try {
-			const { id, role } = req.body;
+			const { id } = req.body;
 
-			const user = await userModel.findOne({ id, role });
+			const user = await userModel.findById(id);
 
 			if (!user) {
 				return res
